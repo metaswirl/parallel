@@ -9,6 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "localize.h"
+#include "cell_struct.h"
+#include "v_extension.h"
+
+void printcell(const struct cell_list *print_cell_l);
 
 int main()
 {
@@ -25,24 +29,33 @@ int main()
         {63,0}
     };
     
-    struct cell_list wholefield = {
+    struct cell_list wholefield_l = {
         10,
         fullfield
     };
     
-    int len, i;
-    struct cell *localized_list;
-    
     struct cell_list *local;
-    local = calloc(1, sizeof(local));
+    local = calloc(512, sizeof(local));
     
-    local = divide_field(8, &wholefield);
-    len = local->len;
-    localized_list = local->ptr;
+    local = divide_field(SEQ_OF_PROCESS, &wholefield_l);
     
-    for (i=0; i<len; i++) {
-        printf("(%d, %d)\n", localized_list[i].x, localized_list[i].y);
-    }
+    printcell(local);
+    
+    v_extend(local);
+    
+    printcell(local);
     
     return 0;
+}
+
+void printcell(const struct cell_list *print_cell_l) {
+    int i, len;
+    struct cell *print_cell;
+    len = print_cell_l->len;
+    print_cell = print_cell_l->ptr;
+    printf("print content of structure\n");
+    for (i=0; i<len; i++) {
+        printf("%d : (%d, %d)\n", i, print_cell[i].x, print_cell[i].y);
+    }
+    printf("----------------------\n");
 }
