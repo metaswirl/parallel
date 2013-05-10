@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cell_struct.h"
+#include "fooprint.h"
 
 void normalize(int seq_of_process, struct cell_list * cells_to_normalize) {
     int i, len = cells_to_normalize->len;

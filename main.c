@@ -12,20 +12,21 @@
 #include "cell_struct.h"
 #include "h_extension.h"
 #include "normalize.h"
+#include "fooprint.h"
+#include "evolve.h"
 
-void printcell(const struct cell_list *print_cell_l);
+int COUNT_FIELD[COUNT_HEIGHT][COUNT_LENGTH];
 
 int main()
 {
-    int COUNT_FIELD[SIZE_OF_UNIT + 4][SIZE_OF_FIELD + 4];
     struct cell fullfield[10] = {
         {0,0},
         {5,5},
         {10,10},
         {20,20},
-        {30,30},
-        {40,40},
-        {50,50},
+        {5,6},
+        {6,7},
+        {7,7},
         {63,63},
         {0,63},
         {63,0}
@@ -36,7 +37,10 @@ int main()
         fullfield
     };
     
+    printf("%ld\n", sizeof(wholefield_l));
+    
     struct cell_list *local;
+    struct cell_list *next;
     local = calloc(512, sizeof(local));
     
     local = divide_field(SEQ_OF_PROCESS, &wholefield_l);
@@ -51,17 +55,13 @@ int main()
     
     printcell(local);
     
+    next = evolve(local);
+    
+    printcell(next);
+    
+    printcell_vividly(next);
+    
+    printcell_vividly(local);
+    
     return 0;
-}
-
-void printcell(const struct cell_list *print_cell_l) {
-    int i, len;
-    struct cell *print_cell;
-    len = print_cell_l->len;
-    print_cell = print_cell_l->ptr;
-    printf("print content of structure\n");
-    for (i=0; i<len; i++) {
-        printf("%d : (%d, %d)\n", i, print_cell[i].h, print_cell[i].v);
-    }
-    printf("-----------------------------\n");
 }
