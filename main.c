@@ -10,12 +10,14 @@
 #include <stdlib.h>
 #include "localize.h"
 #include "cell_struct.h"
-#include "v_extension.h"
+#include "h_extension.h"
+#include "normalize.h"
 
 void printcell(const struct cell_list *print_cell_l);
 
 int main()
 {
+    int COUNT_FIELD[SIZE_OF_UNIT + 4][SIZE_OF_FIELD + 4];
     struct cell fullfield[10] = {
         {0,0},
         {5,5},
@@ -41,7 +43,11 @@ int main()
     
     printcell(local);
     
-    v_extend(local);
+    normalize(SEQ_OF_PROCESS, local);
+    
+    printcell(local);
+    
+    h_extend(local);
     
     printcell(local);
     
@@ -55,7 +61,7 @@ void printcell(const struct cell_list *print_cell_l) {
     print_cell = print_cell_l->ptr;
     printf("print content of structure\n");
     for (i=0; i<len; i++) {
-        printf("%d : (%d, %d)\n", i, print_cell[i].x, print_cell[i].y);
+        printf("%d : (%d, %d)\n", i, print_cell[i].h, print_cell[i].v);
     }
-    printf("----------------------\n");
+    printf("-----------------------------\n");
 }

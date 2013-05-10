@@ -9,6 +9,6 @@
 #ifndef GameOfLife_v_extension_h
 #define GameOfLife_v_extension_h
 
-int v_extend(struct cell_list *local_alive_l);
+int h_extend(struct cell_list *local_alive_l);
 
 #endif

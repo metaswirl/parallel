@@ -12,16 +12,20 @@
 #define SIZE_OF_FIELD 64
 #define NUM_OF_PROCESS 8
 #define SIZE_OF_UNIT (SIZE_OF_FIELD / NUM_OF_PROCESS)
-#define SEQ_OF_PROCESS 8
+#define SEQ_OF_PROCESS 1
+#define FIRST_PROCESS 1
+#define LAST_PROCESS NUM_OF_PROCESS
 
 struct cell {
-    int x;
-    int y;
+    int h;
+    int v;
 };
 
 struct cell_list {
     int len;
     struct cell *ptr;
 };
+
+extern int **COUNT_FIELD;
 
 #endif
