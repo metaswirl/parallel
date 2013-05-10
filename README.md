@@ -1,0 +1,4 @@
+parallel
+========
+
+parallel programming course
