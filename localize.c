@@ -1,3 +1,12 @@
+//  Created by JIANNAN GUO on 11.05.13.
+//  Copyright (c) 2013 Jiannan Guo. All rights reserved.
+//
+//  **********
+//  Distribute the job based on sequence number of current process(node).
+//  return type: cell_list
+//  NOTICE: the first node will contain the alive cells in last row and vise versa.
+//  **********
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "localize.h"

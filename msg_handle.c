@@ -5,6 +5,9 @@
 //  Created by JIANNAN GUO on 11.05.13.
 //  Copyright (c) 2013 Jiannan Guo. All rights reserved.
 //
+//  **********
+//  take the message and extract the information. Copy it into alive list at the same time
+//  **********
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -5,6 +5,11 @@
 //  Created by JIANNAN GUO on 10.05.13.
 //  Copyright (c) 2013 Jiannan Guo. All rights reserved.
 //
+//  **********
+//  This function take a structure of alive cell list
+//  It copies the last column, appends it before the first column and vise versa.
+//  The function will return 0 if succeed or -1 if an error detected.
+//  **********
 
 #include <stdio.h>
 #include <stdlib.h>

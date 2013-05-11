@@ -5,6 +5,10 @@
 //  Created by JIANNAN GUO on 10.05.13.
 //  Copyright (c) 2013 Jiannan Guo. All rights reserved.
 //
+//  **********
+//  print_count_matrix print play field matrix
+//  printcell take a tructure of print_cell_l and print the content out
+//  printcell_vividly take a structure of print_cell_l and print it as a diagram, CAN ONLY TAKE NORMALIZED EXTENDED list!!!
 
 #include <stdio.h>
 #include "cell_struct.h"

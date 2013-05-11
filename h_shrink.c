@@ -5,6 +5,9 @@
 //  Created by JIANNAN GUO on 10.05.13.
 //  Copyright (c) 2013 Jiannan Guo. All rights reserved.
 //
+//  **********
+//  remove first and last column and adjust the offset
+//  **********
 
 #include <stdio.h>
 #include <stdlib.h>

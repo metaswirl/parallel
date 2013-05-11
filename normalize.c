@@ -5,6 +5,18 @@
 //  Created by JIANNAN GUO on 10.05.13.
 //  Copyright (c) 2013 Jiannan Guo. All rights reserved.
 //
+//  **********
+//  normalize the play field:
+//  (1, Y)--------------------- (X, Y)
+//    |                            |
+//    |                            |
+//    |                            |
+//    |                            |
+//    |                            |
+//  (1, 1)--------------------- (X, 1)
+//  the purpose to let the field start from (1, 1) is to put it in the center of counting field, wich start from (0, 0)
+//  ( NOT because I'm not used to programmer style !!!)
+//  **********
 
 #include <stdio.h>
 #include <stdlib.h>

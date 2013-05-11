@@ -48,11 +48,15 @@ int main()
     
     current = calloc(512, sizeof(current));
     
+    /* --------------localize-------------- */
+    
     current = divide_field(SEQ_OF_PROCESS, &wholefield_l);
     
     printcell(current, "after divide_field");
 
     normalize(SEQ_OF_PROCESS, current);
+    
+    /* --------------go through a cycle of evolution-------------- */
     
     h_extend(current);
     
@@ -61,6 +65,10 @@ int main()
     shrinked = shrink(next);
     
     printcell(shrinked, "after shrink");
+    
+    /* --------------end-------------- */
+    
+    /* --------------go through a cycle of evolution-------------- */
     
     h_extend(shrinked);
     
@@ -78,6 +86,10 @@ int main()
     
     printcell(shrinked, "after shrink");
     
+    /* --------------end-------------- */
+    
+    /* --------------generate the message-------------- */
+    
     message down = msg_extract("down", shrinked);
     
     printf("down message: num = %d\n", down.num);
@@ -85,6 +97,8 @@ int main()
     message up = msg_extract("up", shrinked);
     
     printf("up message: num = %d\n", up.num);
+    
+    /* --------------denormalize-------------- */
     
     cell_list *origin;
     
