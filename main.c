@@ -14,6 +14,9 @@
 #include "normalize.h"
 #include "fooprint.h"
 #include "evolve.h"
+#include "h_shrink.h"
+#include "msg_extract.h"
+#include "denormalize.h"
 
 int COUNT_FIELD[COUNT_HEIGHT][COUNT_LENGTH];
 
@@ -39,29 +42,55 @@ int main()
     
     printf("%ld\n", sizeof(wholefield_l));
     
-    struct cell_list *local;
+    struct cell_list *current;
     struct cell_list *next;
-    local = calloc(512, sizeof(local));
+    struct cell_list *shrinked;
     
-    local = divide_field(SEQ_OF_PROCESS, &wholefield_l);
+    current = calloc(512, sizeof(current));
     
-    printcell(local);
+    current = divide_field(SEQ_OF_PROCESS, &wholefield_l);
     
-    normalize(SEQ_OF_PROCESS, local);
+    printcell(current, "after divide_field");
+
+    normalize(SEQ_OF_PROCESS, current);
     
-    printcell(local);
+    h_extend(current);
     
-    h_extend(local);
+    next = evolve(current);
     
-    printcell(local);
+    shrinked = shrink(next);
     
-    next = evolve(local);
+    printcell(shrinked, "after shrink");
     
-    printcell(next);
+    h_extend(shrinked);
     
-    printcell_vividly(next);
+    printcell(shrinked, "after extend");
     
-    printcell_vividly(local);
+    printcell_vividly(shrinked, "extend next");
+    
+    cell_list *next_next = evolve(next);
+    
+    printcell(next_next, "next next generation");
+    
+    printcell_vividly(next_next, "next next generation");
+    
+    shrinked = shrink(next_next);
+    
+    printcell(shrinked, "after shrink");
+    
+    message down = msg_extract("down", shrinked);
+    
+    printf("down message: num = %d\n", down.num);
+    
+    message up = msg_extract("up", shrinked);
+    
+    printf("up message: num = %d\n", up.num);
+    
+    cell_list *origin;
+    
+    origin = denormalize(SEQ_OF_PROCESS, shrinked);
+    
+    printcell(origin, "original coordinates");
     
     return 0;
 }
