@@ -1,0 +1,126 @@
+Assignment 1
+Niklas Semmler, Ramkumar Rajagopalan, Christos-Christodoulos Tsakiroglou, Jiannan Guo
+
+Question 1
+nsemmler@tusci-admin:~/as1$ i_am_logged_in
+> Congratulations! :)
+
+Question 2
+- Part a)
+mpicc.openmpi -Wall -o program question2a.c
+ccsalloc -n 5 openmpi -- ./program 
+
+> ccsalloc: Using default time            : 10 minutes
+> ccsalloc: Connecting default machine    : TUSCI
+> [snip]
+> ccsalloc: Using default project         : nsemmler
+> Press ENTER or type command to continue
+> ccsalloc: Using default name            : nsemmler%d
+> ccsalloc: Setting cwd to default value: /home/students/nsemmler/
+> ccsalloc: Job notifying                 : Off
+> ccsalloc: Notifying about event classes : ---n--
+> ccsalloc: Only user may access          : On
+> ccsalloc: Job's stdin                   : Not redirected
+> ccsalloc: Job's stdout                  : redirected to    : /dev/null (if no UI attached)
+> ccsalloc: Job's stderr                  : redirected to    : /dev/null (if no UI attached)
+> ccsalloc: Request (16/nsemmler_1): will be authenticated and scheduled
+> ccsalloc: Request (16/nsemmler_1): is scheduled and waits for allocation
+> ccsalloc: Request (16/nsemmler_1): will be allocated now
+> ccsalloc: Request (16/nsemmler_1): is allocated
+> ccsalloc: Starting openmpi -- ./program
+> [snip]
+> Boothost: tusci12
+> runopenmpi: starting: /usr/bin/mpiexec.openmpi -machinefile /tmp/OMPI_hostfile_10878  -n 5 ./program
+> 1804289383, Hello world :)
+> 1804289383, Hello world :)
+> 1804289383, Hello world :)
+> 1804289383, Hello world :)
+> 1804289383, Hello world :)
+> 1804289383, My rank in the communicator? Well that would be 3
+> 1804289383, The number of my group mates? Good question, that would be 5
+> 1804289383, I am happy that I could be of service!
+> 1804289383, My rank in the communicator? Well that would be 0
+> 1804289383, My rank in the communicator? Well that would be 1
+> 1804289383, My rank in the communicator? Well that would be 2
+> 1804289383, The number of my group mates? Good question, that would be 5
+> 1804289383, The number of my group mates? Good question, that would be 5
+> 1804289383, The number of my group mates? Good question, that would be 5
+> 1804289383, I am happy that I could be of service!
+> 1804289383, I am happy that I could be of service!
+> 1804289383, I am happy that I could be of service!
+> 1804289383, My rank in the communicator? Well that would be 4
+> 1804289383, The number of my group mates? Good question, that would be 5
+> 1804289383, I am happy that I could be of service!
+> runopenmpi: ./program exited with 0
+> Press ENTER or type command to continue
+> 
+> 
+> CCS>>> request 16(nsemmler_1), command 'openmpi -- ./program'
+> CCS>>> exited with 0
+
+Part b)
+mpicc.openmpi -Wall -o program question2b.c
+ccsalloc -n 5 openmpi -- ./program go_to_hell_back
+
+> [snip]
+> Hello world, I am node 0 of 5
+> first node: I will send go_to_hell_back to 1
+> Hello world, I am node 2 of 5
+> Hello world, I am node 3 of 5
+> Hello world, I am node 1 of 5
+> Hello world, I am node 4 of 5
+> Sent!
+> 1th node, I just received go_to_hell_back
+> 1th node: I will send go_to_hell_back to 2
+> 2th node, I just received go_to_hell_back
+> 2th node: I will send go_to_hell_back to 3
+> 3th node, I just received go_to_hell_back
+> 3th node: I will send go_to_hell_back to 4
+> 4th node, I just received go_to_hell_back
+> I am the last one :D
+> runopenmpi: ./program exited with 0
+> 
+> 
+> CCS>>> request 1(nsemmler_1), command 'openmpi -- ./program go_to_hell_back'
+> CCS>>> exited with 0
+
+Question 3
+Part a)
+(p-1) * (n/beta + alpha)
+
+Part b)
+Assumptions: Computation time and pattern of interconnectivity can be ignored
+Solution: Let the first node to receive the message send to all other nodes
+
+Assumptions: Pattern of interconnectivity can be ignored
+If the assumption regarding computation time is wrong, matters become more difficult. The optimal means of distribution would depend on the size of node population and size of the message. A tree structure comes immediately to mind. 
+
+Of course this would only make sense if there is already a tree structure in the connectivity, or at every node is connected with every other. So an algorithm for broadcast always have to take the following factors into account:
+- pattern of interconnectivity
+- number of nodes & size of message
+
+Part c)
+> mpicc.openmpi -Wall -o program question3c.c
+> ccsalloc -n 5 openmpi -- ./program go_to_hell_back
+> 
+> [snip]
+> Hello world, I am node 0 of 5
+> First node here copied msg 'go_to_hell_back' to buffer 'go_to_hell_back'
+> Hello world, I am node 1 of 5
+> Hello world, I am node 2 of 5
+> Hello world, I am node 3 of 5
+> Hello world, I am node 4 of 5
+> Sent!
+> 4th node, I just received go_to_hell_back
+> Sent!
+> 2th node, I just received go_to_hell_back
+> Sent!
+> 1th node, I just received go_to_hell_back
+> Sent!
+> 3th node, I just received go_to_hell_back
+> Sent!
+> runopenmpi: ./program exited with 0
+> 
+> 
+> CCS>>> request 4(nsemmler_1), command 'openmpi -- ./program go_to_hell_back'
+> CCS>>> exited with 0
