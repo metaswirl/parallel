@@ -97,7 +97,8 @@ int main()
     kill_msg(up);
     
     /* --------------------------end------------------------------ */
-    /*
+    
+    /* ------------ 1000 cycles of evolution ----------- */
     int i = 0;
     current = next;
     for (i=0; i<1000; i++) {
@@ -105,7 +106,8 @@ int main()
         kill_cell(current);
         current = next;
     }
-    */
+    /* -------------------end-------------------- */
+    
     /* --------------denormalize-------------- */
     
     cell_list *origin;
