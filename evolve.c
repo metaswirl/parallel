@@ -10,16 +10,23 @@
 #include <stdlib.h>
 #include "cell_struct.h"
 #include "fooprint.h"
+#include "h_shrink.h"
+#include "h_extension.h"
 
 struct cell_list *evolve(struct cell_list *alive_cells_t) {
     int i, len = alive_cells_t->len;
     int h, v, count, x, y;
-    struct cell *alive_cells;
-    struct cell *next_generation;
-    struct cell_list *next_generation_t;
+    cell *alive_cells;
+    cell *next_generation;
+    static cell_list *next_generation_t;
+    static cell_list *next_generation_l;
     next_generation_t = calloc(1, sizeof(next_generation_t));
+    next_generation_l = calloc(1, sizeof(next_generation_l));
     next_generation = calloc(512, sizeof(next_generation));
     int offset = 0;
+    
+    h_extend(alive_cells_t); // extend first
+    
     alive_cells = alive_cells_t->ptr;
     for (i=0; i<len; i++) {
         h = alive_cells[i].h;
@@ -64,5 +71,7 @@ struct cell_list *evolve(struct cell_list *alive_cells_t) {
     next_generation_t->len = offset;
     next_generation_t->ptr = next_generation;
     
-    return next_generation_t;
+    next_generation_l = shrink(next_generation_t);
+    
+    return next_generation_l;
 }

@@ -24,8 +24,6 @@ int h_extend(struct cell_list *alive_cell_l) {
     len = alive_cell_l->len;
     alive_cell = alive_cell_l->ptr;
     
-    printcell(alive_cell_l, "before extend");
-    
     for (i=0; i<len; i++) {
         if (alive_cell[i].h == SIZE_OF_FIELD) {
             // append last column before the first one

@@ -21,7 +21,7 @@
 #define PROCESS_KNOWLEDGE_L SIZE_OF_FIELD
 #define PROCESS_KNOWLEDGE_H SIZE_OF_UNIT + 2
 
-#define SEQ_OF_PROCESS 1
+#define SEQ_OF_PROCESS 8
 
 typedef struct cell {
     int h;

@@ -10,13 +10,14 @@
 #include <stdlib.h>
 #include "localize.h"
 #include "cell_struct.h"
-#include "h_extension.h"
+//#include "h_extension.h"
 #include "normalize.h"
 #include "fooprint.h"
 #include "evolve.h"
-#include "h_shrink.h"
+//#include "h_shrink.h"
 #include "msg_extract.h"
 #include "denormalize.h"
+#include "killer.h"
 
 int COUNT_FIELD[COUNT_HEIGHT][COUNT_LENGTH];
 
@@ -40,71 +41,82 @@ int main()
         fullfield
     };
     
-    printf("%ld\n", sizeof(wholefield_l));
+    printf("Process %d\n", SEQ_OF_PROCESS);
     
-    struct cell_list *current;
-    struct cell_list *next;
-    struct cell_list *shrinked;
+    cell_list *current = NULL;
+    cell_list *next = NULL;
     
-    current = calloc(512, sizeof(current));
+    message up, down;
     
     /* --------------localize-------------- */
     
     current = divide_field(SEQ_OF_PROCESS, &wholefield_l);
     
-    printcell(current, "after divide_field");
+    printcell(current, "local job");
 
     normalize(SEQ_OF_PROCESS, current);
     
     /* --------------go through a cycle of evolution-------------- */
     
-    h_extend(current);
-    
     next = evolve(current);
     
-    shrinked = shrink(next);
+    kill_cell(current); // destroy scraps
     
-    printcell(shrinked, "after shrink");
+    // generate the message
     
-    /* --------------end-------------- */
-    
-    /* --------------go through a cycle of evolution-------------- */
-    
-    h_extend(shrinked);
-    
-    printcell(shrinked, "after extend");
-    
-    printcell_vividly(shrinked, "extend next");
-    
-    cell_list *next_next = evolve(next);
-    
-    printcell(next_next, "next next generation");
-    
-    printcell_vividly(next_next, "next next generation");
-    
-    shrinked = shrink(next_next);
-    
-    printcell(shrinked, "after shrink");
-    
-    /* --------------end-------------- */
-    
-    /* --------------generate the message-------------- */
-    
-    message down = msg_extract("down", shrinked);
+    down = msg_extract("down", next);
     
     printf("down message: num = %d\n", down.num);
     
-    message up = msg_extract("up", shrinked);
+    up = msg_extract("up", next);
     
     printf("up message: num = %d\n", up.num);
     
+    /* --------------------------end------------------------------ */
+    
+    current = next;
+    
+    /* --------------go through a cycle of evolution-------------- */
+    
+    next = evolve(current);
+    
+    kill_cell(current); // destroy scraps
+    
+    // generate the message
+    
+    down = msg_extract("down", next);
+    
+    printf("down message: num = %d\n", down.num);
+    
+    up = msg_extract("up", next);
+    
+    printf("up message: num = %d\n", up.num);
+    
+    kill_msg(down);
+    
+    kill_msg(up);
+    
+    /* --------------------------end------------------------------ */
+    /*
+    int i = 0;
+    current = next;
+    for (i=0; i<1000; i++) {
+        next = evolve(current);
+        kill_cell(current);
+        current = next;
+    }
+    */
     /* --------------denormalize-------------- */
     
     cell_list *origin;
     
-    origin = denormalize(SEQ_OF_PROCESS, shrinked);
+    origin = denormalize(SEQ_OF_PROCESS, next);
     
     printcell(origin, "original coordinates");
+    
+    kill_cell(next);
+    
+    kill_cell(origin);
     
     return 0;
 }
