@@ -24,7 +24,7 @@ struct cell_list *evolve(struct cell_list *alive_cells_t) {
     next_generation_l = calloc(1, sizeof(next_generation_l));
     next_generation = calloc(512, sizeof(next_generation));
     int offset = 0;
-    
+
     h_extend(alive_cells_t); // extend first
     
     alive_cells = alive_cells_t->ptr;
@@ -40,8 +40,6 @@ struct cell_list *evolve(struct cell_list *alive_cells_t) {
         COUNT_FIELD[v+1][h]++;
         COUNT_FIELD[v+1][h+1]++;
     }
-    
-    print_count_matrix();
     
     for (i=0; i<len; i++) {
         count = COUNT_FIELD[alive_cells[i].v][alive_cells[i].h];
@@ -59,8 +57,8 @@ struct cell_list *evolve(struct cell_list *alive_cells_t) {
         for (y=v-1; y<=v+1; y++) {
             for (x=h-1; x<=h+1; x++) {
                 if (COUNT_FIELD[y][x] == 3) {
-                    next_generation[offset].h = y;
-                    next_generation[offset].v = x;
+                    next_generation[offset].h = x;
+                    next_generation[offset].v = y;
                     offset++;
                 }
                 COUNT_FIELD[y][x] = 0;

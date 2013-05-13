@@ -24,15 +24,15 @@ int COUNT_FIELD[COUNT_HEIGHT][COUNT_LENGTH];
 int main()
 {
     struct cell fullfield[10] = {
-        {0,0},
-        {5,5},
-        {10,10},
-        {20,20},
-        {5,6},
-        {6,7},
-        {7,7},
-        {63,63},
-        {0,63},
+        {4,2},
+        {4,3},
+        {5,2},
+        {5,3},
+        {6,4},
+        {6,5},
+        {7,4},
+        {7,5},
+        {7,20},
         {63,0}
     };
     
@@ -51,14 +51,18 @@ int main()
     /* --------------localize-------------- */
     
     current = divide_field(SEQ_OF_PROCESS, &wholefield_l);
-    
-    printcell(current, "local job");
 
     normalize(SEQ_OF_PROCESS, current);
+    
+    printcell(current, "local job");
     
     /* --------------go through a cycle of evolution-------------- */
     
     next = evolve(current);
+    
+    printcell(next, "1st generation");
+    
+    printcell_vividly(next, "1st generation");
     
     kill_cell(current); // destroy scraps
     
@@ -79,6 +83,10 @@ int main()
     /* --------------go through a cycle of evolution-------------- */
     
     next = evolve(current);
+    
+    printcell(next, "2nd generation");
+    
+    printcell_vividly(next, "2nd generation");
     
     kill_cell(current); // destroy scraps
     
@@ -99,13 +107,13 @@ int main()
     /* --------------------------end------------------------------ */
     
     /* ------------ 1000 cycles of evolution ----------- */
-    int i = 0;
+    /*int i = 0;
     current = next;
     for (i=0; i<1000; i++) {
         next = evolve(current);
         kill_cell(current);
         current = next;
-    }
+    }*/
     /* -------------------end-------------------- */
     
     /* --------------denormalize-------------- */
@@ -114,7 +122,7 @@ int main()
     
     origin = denormalize(SEQ_OF_PROCESS, next);
     
-    printcell(origin, "original coordinates");
+    printcell(origin, "coordinates in standard format");
     
     kill_cell(next);
     

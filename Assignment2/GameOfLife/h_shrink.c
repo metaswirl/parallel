@@ -24,7 +24,7 @@ struct cell_list * shrink(const struct cell_list *alive_cell_l) {
     int len_after_shrink = 0;
     
     for (i=0; i<len; i++) {
-        if (before_shrink[i].h >= 2 && before_shrink[i].h <= SIZE_OF_FIELD+1) {
+        if (before_shrink[i].h > 1 && before_shrink[i].h < SIZE_OF_FIELD + 2) {
             after_shrink[len_after_shrink].h = before_shrink[i].h - 1;
             after_shrink[len_after_shrink].v = before_shrink[i].v;
             len_after_shrink++;
