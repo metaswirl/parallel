@@ -5,38 +5,45 @@
 //  Created by JIANNAN GUO on 10.05.13.
 //  Copyright (c) 2013 Jiannan Guo. All rights reserved.
 //
+//  **********
+//  This function take a structure of alive cell list
+//  It copies the last column, appends it before the first column and vise versa.
+//  The function will return 0 if succeed or -1 if an error detected.
+//  **********
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "localize.h"
 #include "cell_struct.h"
+#include "fooprint.h"
 
-int h_extend(struct cell_list *local_alive_l) {
+int h_extend(struct cell_list *alive_cell_l) {
     int i, len, ex_len=0;
-    struct cell *local_alive;
+    struct cell *alive_cell;
     
-    len = local_alive_l->len;
-    local_alive = local_alive_l->ptr;
+    len = alive_cell_l->len;
+    alive_cell = alive_cell_l->ptr;
+    
     for (i=0; i<len; i++) {
-        if (local_alive[i].h == SIZE_OF_FIELD) {
+        if (alive_cell[i].h == SIZE_OF_FIELD) {
             // append last column before the first one
-            local_alive[len + ex_len].v = local_alive[i].v;
-            local_alive[len + ex_len].h = 1;
+            alive_cell[len + ex_len].v = alive_cell[i].v;
+            alive_cell[len + ex_len].h = 1;
             ex_len++;
-        } else if (local_alive[i].h == 1) {
+        } else if (alive_cell[i].h == 1) {
             // append first column after the last one
-            local_alive[len + ex_len].v = local_alive[i].v;
-            local_alive[len + ex_len].h = SIZE_OF_FIELD + 2;
+            alive_cell[len + ex_len].v = alive_cell[i].v;
+            alive_cell[len + ex_len].h = SIZE_OF_FIELD + 2;
             ex_len++;
-        } else if (local_alive[i].h == 0) {
+        } else if (alive_cell[i].h == 0) {
             printf("ERROR in horizontal extension, please normalize first!\n");
             return 1;
         }
-        local_alive[i].h++;
+        alive_cell[i].h++;
     }
     
-    local_alive_l->len = len + ex_len;
-    local_alive_l->ptr = local_alive;
+    alive_cell_l->len = len + ex_len;
+    alive_cell_l->ptr = alive_cell;
     
     return 0;
 }

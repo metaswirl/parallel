@@ -10,10 +10,14 @@
 #include <stdlib.h>
 #include "localize.h"
 #include "cell_struct.h"
-#include "h_extension.h"
+//#include "h_extension.h"
 #include "normalize.h"
 #include "fooprint.h"
 #include "evolve.h"
+//#include "h_shrink.h"
+#include "msg_extract.h"
+#include "denormalize.h"
+#include "killer.h"
 
 int COUNT_FIELD[COUNT_HEIGHT][COUNT_LENGTH];
 
@@ -37,31 +41,84 @@ int main()
         fullfield
     };
     
-    printf("%ld\n", sizeof(wholefield_l));
+    printf("Process %d\n", SEQ_OF_PROCESS);
     
-    struct cell_list *local;
-    struct cell_list *next;
-    local = calloc(512, sizeof(local));
+    cell_list *current = NULL;
+    cell_list *next = NULL;
     
-    local = divide_field(SEQ_OF_PROCESS, &wholefield_l);
+    message up, down;
     
-    printcell(local);
+    /* --------------localize-------------- */
     
-    normalize(SEQ_OF_PROCESS, local);
+    current = divide_field(SEQ_OF_PROCESS, &wholefield_l);
     
-    printcell(local);
+    printcell(current, "local job");
+
+    normalize(SEQ_OF_PROCESS, current);
     
-    h_extend(local);
+    /* --------------go through a cycle of evolution-------------- */
     
-    printcell(local);
+    next = evolve(current);
     
-    next = evolve(local);
+    kill_cell(current); // destroy scraps
     
-    printcell(next);
+    // generate the message
     
-    printcell_vividly(next);
+    down = msg_extract("down", next);
     
-    printcell_vividly(local);
+    printf("down message: num = %d\n", down.num);
+    
+    up = msg_extract("up", next);
+    
+    printf("up message: num = %d\n", up.num);
+    
+    /* --------------------------end------------------------------ */
+    
+    current = next;
+    
+    /* --------------go through a cycle of evolution-------------- */
+    
+    next = evolve(current);
+    
+    kill_cell(current); // destroy scraps
+    
+    // generate the message
+    
+    down = msg_extract("down", next);
+    
+    printf("down message: num = %d\n", down.num);
+    
+    up = msg_extract("up", next);
+    
+    printf("up message: num = %d\n", up.num);
+    
+    kill_msg(down);
+    
+    kill_msg(up);
+    
+    /* --------------------------end------------------------------ */
+    
+    /* ------------ 1000 cycles of evolution ----------- */
+    int i = 0;
+    current = next;
+    for (i=0; i<1000; i++) {
+        next = evolve(current);
+        kill_cell(current);
+        current = next;
+    }
+    /* -------------------end-------------------- */
+    
+    /* --------------denormalize-------------- */
+    
+    cell_list *origin;
+    
+    origin = denormalize(SEQ_OF_PROCESS, next);
+    
+    printcell(origin, "original coordinates");
+    
+    kill_cell(next);
+    
+    kill_cell(origin);
     
     return 0;
 }

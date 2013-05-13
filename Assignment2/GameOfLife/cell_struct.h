@@ -18,17 +18,25 @@
 #define COUNT_LENGTH SIZE_OF_FIELD+4
 #define COUNT_HEIGHT SIZE_OF_UNIT+4
 
-#define SEQ_OF_PROCESS 1
+#define PROCESS_KNOWLEDGE_L SIZE_OF_FIELD
+#define PROCESS_KNOWLEDGE_H SIZE_OF_UNIT + 2
 
-struct cell {
+#define SEQ_OF_PROCESS 8
+
+typedef struct cell {
     int h;
     int v;
-};
+}cell;
 
-struct cell_list {
+typedef struct cell_list {
     int len;
     struct cell *ptr;
-};
+}cell_list;
+
+typedef struct message {
+    int num;
+    int *alive_abscissa;
+}message;
 
 extern int COUNT_FIELD[COUNT_HEIGHT][COUNT_LENGTH];
 

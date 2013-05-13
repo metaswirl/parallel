@@ -10,7 +10,7 @@
 #define GameOfLife_fooprint_h
 
 void print_count_matrix(void);
-void printcell(const struct cell_list *print_cell_l);
-void printcell_vividly(const struct cell_list *print_cell_t);
+void printcell(const struct cell_list *print_cell_l, char *word);
+void printcell_vividly(const struct cell_list *print_cell_t, char *word);
 
 #endif
