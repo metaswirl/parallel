@@ -15,8 +15,8 @@
 #include "fooprint.h"
 #include "evolve.h"
 #include "h_shrink.h"
-#include "msg_extract.h"
-#include "denormalize.h"
+//#include "msg_extract.h"
+//#include "denormalize.h"
 
 int COUNT_FIELD[COUNT_HEIGHT][COUNT_LENGTH];
 
@@ -53,7 +53,7 @@ int main()
     current = divide_field(SEQ_OF_PROCESS, &wholefield_l);
     
     printcell(current, "after divide_field");
-
+    
     normalize(SEQ_OF_PROCESS, current);
     
     /* --------------go through a cycle of evolution-------------- */
@@ -61,6 +61,10 @@ int main()
     h_extend(current);
     
     next = evolve(current);
+
+    printcell(next, "next generation");
+
+    printcell_vividly(next, "next generation");
     
     shrinked = shrink(next);
     
@@ -90,6 +94,7 @@ int main()
     
     /* --------------generate the message-------------- */
     
+    /*
     message down = msg_extract("down", shrinked);
     
     printf("down message: num = %d\n", down.num);
@@ -97,14 +102,17 @@ int main()
     message up = msg_extract("up", shrinked);
     
     printf("up message: num = %d\n", up.num);
+    */
     
     /* --------------denormalize-------------- */
-    
+
+    /*
     cell_list *origin;
     
     origin = denormalize(SEQ_OF_PROCESS, shrinked);
     
     printcell(origin, "original coordinates");
+    */
     
     return 0;
 }
