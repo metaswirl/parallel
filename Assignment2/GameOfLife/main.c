@@ -46,7 +46,7 @@ int main()
     cell_list *current = NULL;
     cell_list *next = NULL;
     
-    message up, down;
+    message *up, *down;
     
     /* --------------localize-------------- */
     
@@ -64,17 +64,19 @@ int main()
     
     printcell_vividly(next, "1st generation");
     
-    kill_cell(current); // destroy scraps
-    
     // generate the message
     
     down = msg_extract("down", next);
     
-    printf("down message: num = %d\n", down.num);
+    printf("down message: num = %d\n", down->num);
     
     up = msg_extract("up", next);
     
-    printf("up message: num = %d\n", up.num);
+    printf("up message: num = %d\n", up->num);
+    
+    kill_msg(down);
+    
+    kill_msg(up);
     
     /* --------------------------end------------------------------ */
     
@@ -88,17 +90,15 @@ int main()
     
     printcell_vividly(next, "2nd generation");
     
-    kill_cell(current); // destroy scraps
-    
     // generate the message
     
     down = msg_extract("down", next);
     
-    printf("down message: num = %d\n", down.num);
+    printf("down message: num = %d\n", down->num);
     
     up = msg_extract("up", next);
     
-    printf("up message: num = %d\n", up.num);
+    printf("up message: num = %d\n", up->num);
     
     kill_msg(down);
     
@@ -106,14 +106,21 @@ int main()
     
     /* --------------------------end------------------------------ */
     
-    /* ------------ 1000 cycles of evolution ----------- */
-    /*int i = 0;
     current = next;
-    for (i=0; i<1000; i++) {
+    
+    /* ------------ for memory debugger ----------- */
+    /*
+    while (1) {
         next = evolve(current);
         kill_cell(current);
         current = next;
-    }*/
+    }
+    */
+    
+    for (int i=0; i<1000000; i++) {
+        next = evolve(current);
+        current = next;
+    }
     /* -------------------end-------------------- */
     
     /* --------------denormalize-------------- */

@@ -9,6 +9,6 @@
 #ifndef GameOfLife_msg_extract_h
 #define GameOfLife_msg_extract_h
 
-message msg_extract(char *direction, cell_list *alive_list_l);
+message *msg_extract(char *direction, cell_list *alive_list_l);
 
 #endif

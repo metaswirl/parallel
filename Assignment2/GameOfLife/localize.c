@@ -21,7 +21,7 @@ struct cell_list * divide_field(int seq_of_process, const struct cell_list *full
     struct cell *localized_list;
     struct cell_list *localized_list_t;
     localized_list_t = calloc(1, sizeof(localized_list_t));
-    localized_list = calloc(512, sizeof(localized_list));
+    localized_list = calloc(PROCESS_KNOWLEDGE_H * PROCESS_KNOWLEDGE_L, sizeof(localized_list));
     // determine the edges on both sides
     if (seq_of_process < LAST_PROCESS && seq_of_process > FIRST_PROCESS) {
         // not edge, process in the center area.

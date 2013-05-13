@@ -10,6 +10,6 @@
 #define GameOfLife_parents_killer_h
 
 void kill_cell(cell_list *alive_cell_l);
-void kill_msg(message msg);
+void kill_msg(message *msg);
 
 #endif

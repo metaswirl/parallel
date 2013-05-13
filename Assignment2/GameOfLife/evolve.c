@@ -12,17 +12,17 @@
 #include "fooprint.h"
 #include "h_shrink.h"
 #include "h_extension.h"
+#include "killer.h"
 
 struct cell_list *evolve(struct cell_list *alive_cells_t) {
     int i, len = alive_cells_t->len;
     int h, v, count, x, y;
     cell *alive_cells;
     cell *next_generation;
-    static cell_list *next_generation_t;
-    static cell_list *next_generation_l;
+    cell_list *next_generation_t;
+    cell_list *next_generation_l;
     next_generation_t = calloc(1, sizeof(next_generation_t));
-    next_generation_l = calloc(1, sizeof(next_generation_l));
-    next_generation = calloc(512, sizeof(next_generation));
+    next_generation = calloc(PROCESS_KNOWLEDGE_H * PROCESS_KNOWLEDGE_L, sizeof(next_generation));
     int offset = 0;
 
     h_extend(alive_cells_t); // extend first
@@ -70,6 +70,8 @@ struct cell_list *evolve(struct cell_list *alive_cells_t) {
     next_generation_t->ptr = next_generation;
     
     next_generation_l = shrink(next_generation_t);
+
+    kill_cell(alive_cells_t);
     
     return next_generation_l;
 }
