@@ -30,7 +30,7 @@ int main(int argc, char ** argv) {
 
         struct args_t args = {DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_GENS, NULL, NULL};
         struct cell_list wholefield_l;
-        int rank, size;
+        int rank, size,i=0;
 
 /*    struct cell fullfield[10] = {
         {4,2},
