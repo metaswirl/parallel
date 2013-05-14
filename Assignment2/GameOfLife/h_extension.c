@@ -20,7 +20,6 @@
 int h_extend(struct cell_list *alive_cell_l) {
     int i, len, ex_len=0;
     struct cell *alive_cell;
-    
     len = alive_cell_l->len;
     alive_cell = alive_cell_l->ptr;
     

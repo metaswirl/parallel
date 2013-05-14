@@ -15,6 +15,7 @@ void kill_cell(cell_list *alive_cell_l) {
     free(alive_cell_l);
 }
 
-void kill_msg(message msg){
-    free(msg.alive_abscissa);
+void kill_msg(message *msg){
+    free(msg->alive_abscissa);
+    free(msg);
 }

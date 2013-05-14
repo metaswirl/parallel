@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cell_struct.h"
+#include "killer.h"
 
 cell_list *msg_handle(const message msg_from_top, const message msg_from_bottom, cell_list *alive_cell_l) {
     int i, len, msg_len_top, msg_len_bottom, *absacissa_top, *absacissa_bottom;
@@ -52,6 +53,8 @@ cell_list *msg_handle(const message msg_from_top, const message msg_from_bottom,
     
     new_alive_cell_l->len = new_len;
     new_alive_cell_l->ptr = new_alive_cell;
+    
+    kill_cell(alive_cell_l);
     
     return new_alive_cell_l;
 }

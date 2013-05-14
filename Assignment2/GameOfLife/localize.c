@@ -21,12 +21,12 @@ struct cell_list * divide_field(int seq_of_process, const struct cell_list *full
     struct cell *localized_list;
     struct cell_list *localized_list_t;
     localized_list_t = calloc(1, sizeof(localized_list_t));
-    localized_list = calloc(512, sizeof(localized_list));
+    localized_list = calloc(PROCESS_KNOWLEDGE_H * PROCESS_KNOWLEDGE_L, sizeof(localized_list));
     // determine the edges on both sides
-    if (seq_of_process < NUM_OF_PROCESS && seq_of_process > 1) {
+    if (seq_of_process < LAST_PROCESS && seq_of_process > FIRST_PROCESS) {
         // not edge, process in the center area.
         upper_border = SIZE_OF_UNIT * (seq_of_process);
-        lower_border = SIZE_OF_UNIT * (seq_of_process - 1);
+        lower_border = SIZE_OF_UNIT * (seq_of_process - 1) - 1;
         for(i=0; i<length_in; i++) {
             if(alive_list[i].v <= upper_border && alive_list[i].v >= lower_border) {
                 localized_list[length_out].h = alive_list[i].h;
@@ -34,7 +34,7 @@ struct cell_list * divide_field(int seq_of_process, const struct cell_list *full
                 length_out++;
             }
         }
-    } else if (seq_of_process == 1) {
+    } else if (seq_of_process == FIRST_PROCESS) {
         // lower edge process.
         upper_border=SIZE_OF_UNIT;
         for(i=0; i<length_in; i++) {
@@ -44,7 +44,7 @@ struct cell_list * divide_field(int seq_of_process, const struct cell_list *full
                 length_out++;
             }
         }
-    } else if (seq_of_process == NUM_OF_PROCESS) {
+    } else if (seq_of_process == LAST_PROCESS) {
         // upper edge process.
         lower_border=SIZE_OF_FIELD - SIZE_OF_UNIT;
         for(i=0; i<length_in; i++) {

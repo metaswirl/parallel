@@ -14,8 +14,9 @@
 //    |                            |
 //    |                            |
 //  (1, 1)--------------------- (X, 1)
-//  the purpose to let the field start from (1, 1) is to put it in the center of counting field, wich start from (0, 0)
-//  ( NOT because I'm not used to programmer style !!!)
+//  Y = SIZE_OF_UNIT + 2
+//  the purpose to let the field start from (1, 1) is to put it in the CENTER of counting field, wich start from (0, 0)
+//  ( NOT because I'm not professional !!!)
 //  **********
 
 #include <stdio.h>
@@ -32,7 +33,7 @@ void normalize(int seq_of_process, struct cell_list * cells_to_normalize) {
         // in the middle
         for (i=0; i<len; i++) {
             cells[i].h++;
-            cells[i].v -= (seq_of_process * SIZE_OF_UNIT -2);
+            cells[i].v -= (seq_of_process * SIZE_OF_UNIT - 2);
         }
     } else if (seq_of_process == FIRST_PROCESS) {
         // lower edge

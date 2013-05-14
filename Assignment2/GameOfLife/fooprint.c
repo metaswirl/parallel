@@ -46,8 +46,8 @@ void printcell_vividly(const struct cell_list *print_cell_t, char *word) {
     for (i=0; i<len; i++) {
         show[print_cell[i].v][print_cell[i].h] = 1;
     }
-    for (j=COUNT_HEIGHT-1; j>=0; j--) {
-        for (k=0; k<COUNT_LENGTH; k++) {
+    for (j=COUNT_HEIGHT-2; j>0; j--) {
+        for (k=1; k<COUNT_LENGTH-3; k++) {
             printf("%d ", show[j][k]);
         }
         printf("\n");

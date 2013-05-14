@@ -16,11 +16,12 @@
 #include <string.h>
 #include "cell_struct.h"
 
-message msg_extract(char *direction, cell_list *alive_list_l) {
+message *msg_extract(char *direction, cell_list *alive_list_l) {
     int i, len=alive_list_l->len;
     int msg_len = 0;
-    message msg;
+    message *msg;
     int *abscissa;
+    msg = calloc(1, sizeof(msg));
     abscissa = calloc(SIZE_OF_FIELD, sizeof(abscissa));
     cell *alive_list;
     alive_list = alive_list_l->ptr;
@@ -43,8 +44,8 @@ message msg_extract(char *direction, cell_list *alive_list_l) {
         msg_len = -1;
     }
     
-    msg.num = msg_len;
-    msg.alive_abscissa = abscissa;
+    msg->num = msg_len;
+    msg->alive_abscissa = abscissa;
     
     return msg;
 }
