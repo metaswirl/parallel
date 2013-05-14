@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <mpi.h>
 #include "localize.h"
 #include "cell_struct.h"
 //#include "h_extension.h"
@@ -21,8 +22,8 @@
 
 int COUNT_FIELD[COUNT_HEIGHT][COUNT_LENGTH];
 
-int main()
-{
+int main(int argc, char **argv) {
+
     struct cell fullfield[10] = {
         {4,2},
         {4,3},
@@ -41,13 +42,19 @@ int main()
         fullfield
     };
     
-    printf("Process %d\n", SEQ_OF_PROCESS);
-    
     cell_list *current = NULL;
     cell_list *next = NULL;
     
     message *up, *down;
+    int rank, size;
     
+    /* --------------setup mpi-------------- */
+
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    printf("Process %d of %d\n", rank, size);
+
     /* --------------localize-------------- */
     
     current = divide_field(SEQ_OF_PROCESS, &wholefield_l);
