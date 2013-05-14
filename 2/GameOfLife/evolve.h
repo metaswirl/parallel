@@ -1,14 +1,14 @@
 //
-//  v_extension.h
+//  evolve.h
 //  GameOfLife
 //
 //  Created by JIANNAN GUO on 10.05.13.
 //  Copyright (c) 2013 Jiannan Guo. All rights reserved.
 //
 
-#ifndef GameOfLife_v_extension_h
-#define GameOfLife_v_extension_h
+#ifndef GameOfLife_evolve_h
+#define GameOfLife_evolve_h
 
-int v_extend(struct cell_list *local_alive_l);
+struct cell_list * evolve(struct cell_list *alive_cells_t);
 
 #endif
