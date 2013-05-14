@@ -34,11 +34,6 @@ typedef struct cell_list {
     struct cell *ptr;
 }cell_list;
 
-typedef struct message {
-    int num;
-    int *alive_abscissa;
-}message;
-
 extern int COUNT_FIELD[COUNT_HEIGHT][COUNT_LENGTH];
 
 #endif

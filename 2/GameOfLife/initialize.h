@@ -10,14 +10,14 @@
 #include <stdio.h>    // For file i/o
 
 
-void        init_grids (struct cell_list * world, char * infile);
-void        write_grid (struct cell_list * world, char *outfile);
-void        parse_args (struct args_t * args, int argc, char ** argv);
-void        usage ();
+void   init_grids (struct cell_list * world, char * infile);
+void   write_grid (struct cell_list * world, char *outfile);
+void   parse_args (struct args_t * args, int argc, char ** argv);
+void   usage ();
 
 /*
-		Initialize cells based on input file, otherwise all cells
-		are DEAD.
+	Initialize cells based on input file, otherwise all cells
+	are DEAD.
 */
 void init_grids (struct cell_list * world, char * infile) {
 	FILE * fd;
