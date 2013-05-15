@@ -16,36 +16,23 @@
 #include <string.h>
 #include "cell_struct.h"
 
-message *msg_extract(char *direction, cell_list *alive_list_l) {
+void msg_extract(char *direction, const cell_list *alive_list_l, unsigned char *msg) {
     int i, len=alive_list_l->len;
-    int msg_len = 0;
-    message *msg;
-    int *abscissa;
-    msg = calloc(1, sizeof(msg));
-    abscissa = calloc(SIZE_OF_FIELD, sizeof(abscissa));
     cell *alive_list;
     alive_list = alive_list_l->ptr;
     if (!strcmp(direction, "up")) {
         for (i=0; i<len; i++) {
             if (alive_list[i].v == PROCESS_KNOWLEDGE_H - 1) {
-                abscissa[msg_len] = alive_list[i].h;
-                msg_len++;
+                msg[alive_list[i].h - 1] = 1;
             }
         }
     } else if (!strcmp(direction, "down")) {
         for (i=0; i<len; i++) {
             if (alive_list[i].v == 2) {
-                abscissa[msg_len] = alive_list[i].h;
-                msg_len++;
+                msg[alive_list[i].h - 1] = 1;
             }
         }
     } else {
         printf("ERROR : Illegal parameter!\n");
-        msg_len = -1;
     }
-    
-    msg->num = msg_len;
-    msg->alive_abscissa = abscissa;
-    
-    return msg;
 }

@@ -17,9 +17,9 @@ static const struct option long_opts[] = {
 };
 
 // Default parameters for the simulation
-const int     DEFAULT_ROWS = 50;
-const int     DEFAULT_COLS = 100;
-const int     DEFAULT_GENS = 100;
+const int     DEFAULT_ROWS = 32;
+const int     DEFAULT_COLS = 32;
+const int     DEFAULT_GENS = 10;
 
 struct args_t {
 	int nrows;

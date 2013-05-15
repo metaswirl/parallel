@@ -14,16 +14,11 @@
 #include "cell_struct.h"
 #include "killer.h"
 
-cell_list *msg_handle(const message msg_from_top, const message msg_from_bottom, cell_list *alive_cell_l) {
-    int i, len, msg_len_top, msg_len_bottom, *absacissa_top, *absacissa_bottom;
+cell_list *msg_handle(unsigned char *msg_from_top, unsigned char *msg_from_bottom, cell_list *alive_cell_l) {
+    int i, len;
     len = alive_cell_l->len;
     cell *alive_cell;
     alive_cell = alive_cell_l->ptr;
-    msg_len_top = msg_from_top.num;
-    msg_len_bottom = msg_from_bottom.num;
-    absacissa_top = msg_from_top.alive_abscissa;
-    absacissa_bottom = msg_from_bottom.alive_abscissa;
-    
     cell_list *new_alive_cell_l;
     cell *new_alive_cell;
     new_alive_cell = calloc(PROCESS_KNOWLEDGE_H * PROCESS_KNOWLEDGE_L, sizeof(new_alive_cell));
@@ -39,16 +34,20 @@ cell_list *msg_handle(const message msg_from_top, const message msg_from_bottom,
         }
     }
     
-    for (i=0; i<msg_len_top; i++) {
-        new_alive_cell[new_len].h = absacissa_top[i];
-        new_alive_cell[new_len].v = PROCESS_KNOWLEDGE_H;
-        new_len++;
+    for (i=0; i<SIZE_OF_FIELD; i++) {
+        if (msg_from_top[i] == 1) {
+            new_alive_cell[new_len].h = i + 1;
+            new_alive_cell[new_len].v = PROCESS_KNOWLEDGE_H;
+            new_len++;
+        }
     }
     
-    for (i=0; i<msg_len_bottom; i++) {
-        new_alive_cell[new_len].h = absacissa_bottom[i];
-        new_alive_cell[new_len].v = PROCESS_KNOWLEDGE_L;
-        new_len++;
+    for (i=0; i<SIZE_OF_FIELD; i++) {
+        if (msg_from_bottom[i] == 1) {
+            new_alive_cell[new_len].h = i + 1;
+            new_alive_cell[new_len].v = 1;
+            new_len++;
+        }
     }
     
     new_alive_cell_l->len = new_len;

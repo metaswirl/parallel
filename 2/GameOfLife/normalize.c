@@ -33,7 +33,7 @@ void normalize(int seq_of_process, struct cell_list * cells_to_normalize) {
         // in the middle
         for (i=0; i<len; i++) {
             cells[i].h++;
-            cells[i].v -= (seq_of_process * SIZE_OF_UNIT - 2);
+            cells[i].v -= ((seq_of_process-1) * SIZE_OF_UNIT - 2);
         }
     } else if (seq_of_process == FIRST_PROCESS) {
         // lower edge
@@ -51,7 +51,7 @@ void normalize(int seq_of_process, struct cell_list * cells_to_normalize) {
             if (cells[i].v == 0) {
                 cells[i].v = SIZE_OF_UNIT + 2;
             } else {
-                cells[i].v -= (seq_of_process * SIZE_OF_UNIT -2);
+                cells[i].v -= ((seq_of_process-1) * SIZE_OF_UNIT -2);
             }
             cells[i].h++;
         }
