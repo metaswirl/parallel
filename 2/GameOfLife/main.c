@@ -8,7 +8,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+<<<<<<< HEAD
 #include <mpi.h>
+=======
+#include <string.h>
+>>>>>>> 01517c7c9061f00d5d225e4f88713d2d2a4e0e63
 #include "localize.h"
 #include "cell_struct.h"
 //#include "h_extension.h"
@@ -19,12 +23,20 @@
 #include "msg_extract.h"
 #include "denormalize.h"
 #include "killer.h"
+#include "defaults.h"
+#include "initialize.h"
+#include <mpi.h>
+#include <getopt.h>
 
 int COUNT_FIELD[COUNT_HEIGHT][COUNT_LENGTH];
 
-int main(int argc, char **argv) {
+int main(int argc, char ** argv) {
 
-    struct cell fullfield[10] = {
+        struct args_t args = {DEFAULT_ROWS, DEFAULT_COLS, DEFAULT_GENS, NULL, NULL};
+        struct cell_list wholefield_l;
+        int rank, size,i=0;
+
+/*    struct cell fullfield[10] = {
         {4,2},
         {4,3},
         {5,2},
@@ -40,107 +52,115 @@ int main(int argc, char **argv) {
     struct cell_list wholefield_l = {
         10,
         fullfield
-    };
+    }; */
     
-    cell_list *current = NULL;
-    cell_list *next = NULL;
-    
-    message *up, *down;
-    int rank, size;
-    
-    /* --------------setup mpi-------------- */
+    //printf("Process %d\n", SEQ_OF_PROCESS);
 
-    MPI_Init(&argc, &argv);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &size);
-    printf("Process %d of %d\n", rank, size);
+        MPI_Init(&argc, &argv);
+        MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+        MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    /* --------------localize-------------- */
-    
-    current = divide_field(SEQ_OF_PROCESS, &wholefield_l);
+        parse_args(&args, argc, argv);
 
-    normalize(SEQ_OF_PROCESS, current);
+        printf("The arguments are:\n%d, %d, %d, %s, %s\n", args.nrows, args.ncols, args.ngens, args.infile, args.outfile);
+
+        init_grids(&wholefield_l, args.infile);
+
+        printf("\nThe number of cells initially are: %d\n", wholefield_l.len);
+        for(i=0; i<wholefield_l.len; i++)
+                printf("%d %d\n", wholefield_l.ptr[i].h, wholefield_l.ptr[i].v);
     
-    printcell(current, "local job");
-    
-    /* --------------go through a cycle of evolution-------------- */
-    
-    next = evolve(current);
-    
-    printcell(next, "1st generation");
-    
-    printcell_vividly(next, "1st generation");
-    
-    // generate the message
-    
-    down = msg_extract("down", next);
-    
-    printf("down message: num = %d\n", down->num);
-    
-    up = msg_extract("up", next);
-    
-    printf("up message: num = %d\n", up->num);
-    
-    kill_msg(down);
-    
-    kill_msg(up);
-    
-    /* --------------------------end------------------------------ */
-    
-    current = next;
-    
-    /* --------------go through a cycle of evolution-------------- */
-    
-    next = evolve(current);
-    
-    printcell(next, "2nd generation");
-    
-    printcell_vividly(next, "2nd generation");
-    
-    // generate the message
-    
-    down = msg_extract("down", next);
-    
-    printf("down message: num = %d\n", down->num);
-    
-    up = msg_extract("up", next);
-    
-    printf("up message: num = %d\n", up->num);
-    
-    kill_msg(down);
-    
-    kill_msg(up);
-    
-    /* --------------------------end------------------------------ */
-    
-    current = next;
-    
-    /* ------------ for memory debugger ----------- */
-    /*
-    while (1) {
-        next = evolve(current);
-        kill_cell(current);
-        current = next;
-    }
-    */
-    
-    for (int i=0; i<1000000; i++) {
-        next = evolve(current);
-        current = next;
-    }
-    /* -------------------end-------------------- */
-    
-    /* --------------denormalize-------------- */
-    
-    cell_list *origin;
-    
-    origin = denormalize(SEQ_OF_PROCESS, next);
-    
-    printcell(origin, "coordinates in standard format");
-    
-    kill_cell(next);
-    
-    kill_cell(origin);
+//    cell_list *current = NULL;
+//    cell_list *next = NULL;
+//    
+//    message *up, *down;
+//    
+//    /* --------------localize-------------- */
+//    
+//    current = divide_field(SEQ_OF_PROCESS, &wholefield_l);
+//
+//    normalize(SEQ_OF_PROCESS, current);
+//    
+//    printcell(current, "local job");
+//    
+//    /* --------------go through a cycle of evolution-------------- */
+//    
+//    next = evolve(current);
+//    
+//    printcell(next, "1st generation");
+//    
+//    printcell_vividly(next, "1st generation");
+//    
+//    // generate the message
+//    
+//    down = msg_extract("down", next);
+//    
+//    printf("down message: num = %d\n", down->num);
+//    
+//    up = msg_extract("up", next);
+//    
+//    printf("up message: num = %d\n", up->num);
+//    
+//    kill_msg(down);
+//    
+//    kill_msg(up);
+//    
+//    /* --------------------------end------------------------------ */
+//    
+//    current = next;
+//    
+//    /* --------------go through a cycle of evolution-------------- */
+//    
+//    next = evolve(current);
+//    
+//    printcell(next, "2nd generation");
+//    
+//    printcell_vividly(next, "2nd generation");
+//    
+//    // generate the message
+//    
+//    down = msg_extract("down", next);
+//    
+//    printf("down message: num = %d\n", down->num);
+//    
+//    up = msg_extract("up", next);
+//    
+//    printf("up message: num = %d\n", up->num);
+//    
+//    kill_msg(down);
+//    
+//    kill_msg(up);
+//    
+//    /* --------------------------end------------------------------ */
+//    
+//    current = next;
+//    
+//    /* ------------ for memory debugger ----------- */
+//    /*
+//    while (1) {
+//        next = evolve(current);
+//        kill_cell(current);
+//        current = next;
+//    }
+//    */
+//    
+//    for (int i=0; i<1000000; i++) {
+//        next = evolve(current);
+//        current = next;
+//    }
+//    /* -------------------end-------------------- */
+//    
+//    /* --------------denormalize-------------- */
+//    
+//    cell_list *origin;
+//    
+//    origin = denormalize(SEQ_OF_PROCESS, next);
+//    
+//    printcell(origin, "coordinates in standard format");
+//    
+//    kill_cell(next);
+//    
+//    kill_cell(origin);
     
     return 0;
 }
