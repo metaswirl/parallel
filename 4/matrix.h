@@ -1,3 +1,5 @@
+#include <immintrin.h>
+
 #ifndef _MATRIX_H
 #define _MATRIX_H
 
@@ -10,8 +12,8 @@ typedef struct {
 	char header[HEADERLENGTH];
 	int rows;
 	int columns;
-	double *data;
-} matrix_t;
+	double *restrict data __attribute__ ((aligned(64)));
+} matrix_t;// __attribute__ ((aligned));
 
 matrix_t *allocate_matrix(int rows, int columns);
 void free_matrix(matrix_t *m);
