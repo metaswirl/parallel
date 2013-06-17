@@ -12,7 +12,7 @@ typedef struct {
 	char header[HEADERLENGTH];
 	int rows;
 	int columns;
-	double *restrict data __attribute__ ((aligned(64)));
+	double *restrict data; // __attribute__ ((aligned(16)));
 } matrix_t;// __attribute__ ((aligned));
 
 matrix_t *allocate_matrix(int rows, int columns);

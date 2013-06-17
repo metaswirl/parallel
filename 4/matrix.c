@@ -6,6 +6,7 @@
 #include <math.h>
 #include <omp.h>
 #include <immintrin.h>
+#include <sys/time.h>
 #include "matrix.h"
 
 #define SM (64/sizeof(double))
@@ -22,7 +23,7 @@ matrix_t *allocate_matrix(int rows, int columns)
 	strncpy(m->header, HEADER, HEADERLENGTH);
 	m->rows = rows;
 	m->columns = columns;
-	m->data = _mm_malloc(m->rows * m->columns * sizeof(double), 16);
+	m->data = _mm_malloc(m->rows * m->columns * sizeof(double), 64);
 
 	if (m->data == NULL) {
 		fprintf(stderr, "allocate_matrix(): out of memory\n");
@@ -159,7 +160,20 @@ matrix_t *multiply_matrix(matrix_t *a, matrix_t *b)
 
 	matrix_t *c = allocate_matrix(a->rows, b->columns);
 
-	__multiply_matrix(c, a, b);
+	struct timeval start, end;
+	for(int i=0; i<25; i++) {
+		gettimeofday(&start, NULL);
+		__multiply_matrix(c, a, b);
+		gettimeofday(&end, NULL);
+		double exectime = ((end.tv_sec-start.tv_sec)*1000000 + end.tv_usec-start.tv_usec) / 1000000.0;
+		double work = (a->rows * a->columns * b->columns)/1000000.0;
+		work = 2*work;
+		double flops = work/exectime;
+		printf(" Run %d:\n", i+1);
+		printf(" Work = %lf\n", work);
+		printf(" Time taken is %lf seconds\n", exectime);
+		printf(" Work per Second achieved is %lf GFLOPS\n\n", (flops>1000.0) ? flops/1000.0 : flops);
+	}
 
 	return c;
 }
@@ -167,10 +181,10 @@ matrix_t *multiply_matrix(matrix_t *a, matrix_t *b)
 void __multiply_matrix(matrix_t *c, matrix_t *a, matrix_t *b)
 {
 	int i,j,k,i2,j2,k2;
-	/*for (int i = 0; i < c->rows*c->columns; i++)
+	for (int i = 0; i < c->rows*c->columns; i++)
 		c->data[i] = 0.0;
 
-	#pragma omp parallel for default(none) shared(a,b,c) collapse(3)
+	/*#pragma omp parallel for default(none) shared(a,b,c) collapse(3)
 	for (int i = 0; i < a->rows; i++) {
 		for (int k = 0; k < a->columns; k++) {
 			//c->data[i * b->columns + j] = 0.0;
@@ -179,16 +193,16 @@ void __multiply_matrix(matrix_t *c, matrix_t *a, matrix_t *b)
 			}
 		}
 	}*/
-	double *restrict ra;
-	double *restrict rb;
-	double *restrict rc;
-
+	double *restrict ra __attribute__ ((aligned(64)));
+	double *restrict rb __attribute__ ((aligned(64)));
+	double *restrict rc __attribute__ ((aligned(64)));
+	
 	#pragma omp parallel for default(none) shared(a,b,c) private(i,j,k,i2,j2,k2,ra,rb,rc) collapse(3)
 	for (i = 0; i < a->rows; i+=SM) {
 		for (j = 0; j < b->columns; j+=SM) {
 			for (k = 0; k < a->columns; k+=SM) {
 				for (i2 = 0, rc = &c->data[i*b->columns+j], ra=&a->data[i*a->columns+k]; i2 < SM; ++i2, rc+=c->columns, ra+=a->columns) {
-					_mm_prefetch (ra+8, _MM_HINT_NTA);
+					//_mm_prefetch (ra+8, _MM_HINT_NTA);
 					for (k2=0, rb=&b->data[k*b->columns+j]; k2 < SM; ++k2, rb+=b->columns) {
 						__m128d m1d = _mm_load_sd (ra+k2);
 						m1d = _mm_unpacklo_pd (m1d, m1d);
@@ -202,4 +216,5 @@ void __multiply_matrix(matrix_t *c, matrix_t *a, matrix_t *b)
 			}
 		}
 	}			
+
 }
