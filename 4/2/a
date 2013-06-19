@@ -1,0 +1,22 @@
+void multiply_vector_matrix(val, col_ind, row_ptr, vector, res) {
+    /*
+     * res = Matrix * vector 
+     *
+         * Matrix in CSR format:
+     * val - values
+     * col_ind - column indices 
+     * row ptr - row pointers
+     */
+    int lower_bound = row_ptr[0]
+    int upper_bound = 0
+    int row = 0
+
+    for (i = 1; i < len(row_ptr); i++)
+        upper_bound = row_ptr[i]
+        for (j = lower_bound; j < upper_bound; j++)
+            res[row] += vector[col_ind[j]] * val[j]
+        lower_bound = upper_bound
+        row++
+
+    return
+}

@@ -1,0 +1,13 @@
+In case of a band matrix, we propose to store the diagonals only. An NxN matrix with a bandwidth of m can be stored as a rectangular matrix of size Nx(2m+1) by padding the necessary number of zeros.
+
+Then we can complete the Axb multiplication in time smaller O(N*(2m+1)). Hereby the complexity is reduced to almost linear time.
+
+void multiply_band_matrix(int bmatrix[][], int N, int m, int b[], int res[]) {
+    int new_b[] = /* add 2m+1 times 0s in the beginning and end to b */
+    for (i = 0; i<N; i++) {
+        for (j=0; j<2*m+1; j++) {
+            res[i] = bmatrix[i][j] * new_b[j]
+        }
+        new_b++;
+    }
+}

@@ -1,0 +1,18 @@
+Taking the pseudo code of a), the most intuitive way to do the multiplication would be to parallelize the inner loop. This can however easily lead to unequal load balancing as the data can spread very unvevenly throughout the sparse matrix. For example one row could be full of values, the next one empty. Yet both would receive their own thread.
+
+To account for this unequality we evenly share the row_ptr instead of rows. Below you can find an example for two threads:
+int lower_bound = row_ptr[0]
+for (i = 1; i < len(row_ptr)/2; i++)
+    upper_bound = row_ptr[i]
+    for (j = lower_bound; j < upper_bound; j++)
+        res[row] += vector[col_ind[j]] * val[j]
+    lower_bound = upper_bound
+    row++
+
+lower_bound = row_ptr[len(row_ptr)/2+1]
+for (i = len(row_ptr)/2+2; i < len(row_ptr); i++)
+    upper_bound = row_ptr[i]
+    for (j = lower_bound; j < upper_bound; j++)
+        res[row] += vector[col_ind[j]] * val[j]
+    lower_bound = upper_bound
+    row++
