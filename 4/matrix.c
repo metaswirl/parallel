@@ -179,14 +179,60 @@ void __multiply_matrix(matrix_t *c, matrix_t *a, matrix_t *b)
 			}
 		}
 	}*/
+    /*
+     * --- DEFINITION ---
+     * Matrix A (M rows, N columns) x Matrix B (N rows, O columns)
+     * Both matrices share the k index (range 0 .. N)
+     *
+     * Matrix C is then defined as c(i,j) = forall_k a(i,k) x b(k,j)
+     *
+     * --- PARALLELIZATION / OPENMP ---
+     *  We tell the compiler the following variables will not be aliased across threads.
+     */
 	double *restrict ra;
 	double *restrict rb;
 	double *restrict rc;
-
-	#pragma omp parallel for default(none) shared(a,b,c) private(i,j,k,i2,j2,k2,ra,rb,rc) collapse(3)
+    /*
+     * Set the numbers of threads equal to the number of processors
+     */
+    //omp_set_dynamic( 0 );
+    //omp_set_num_threads( omp_get_num_procs() );
+    /* 
+     *  default(none) -- deactivate all variable declarations
+     *  shared(a,b,c) -- the matrices are available to all threads
+     *  private(...)  -- indices are thread specific
+     *
+     *  collapse(3)   -- parallelization starts in the third for loop
+     *
+     *  schedule      -- way of scheduling
+     */
+	#pragma omp parallel for default(none) shared(a,b,c) private(i,j,k,i2,j2,k2,ra,rb,rc) collapse(3) //schedule(static, 250)
+    /*
+     * --- CACHE ---
+     * -- ORDER / LOOP INTERCHANGE
+     * From a caching perspective, what we first extract from memory is the first rows of A and B
+     * Following the normal order, we would multiply the first element of B and of A. We would then
+     *  throw the rest of B away and request its second row to multiply it with the second element of A
+     * The efficiency of one cash request of matrix B is 1/O. Lets increase this:
+     *
+     * We define a component c(i,j)(k) = a(i,k) x b(k,j), so that c(i,j) = forall_k c(i,j)(k) 
+     * Now we can process the structure in a way that we 
+     *  first calculate forall_i,j c(i,j)(0) = a(i, 0) x b(0, j) 
+     *  then forall_i,j c(i,j)(1) = a(i, 1) x b(1, j) 
+     *  untill forall_i,j c(i,j)(N) = a(i, N) x b(1, N)  
+     *
+     */
 	for (i = 0; i < a->rows; i+=SM) {
 		for (j = 0; j < b->columns; j+=SM) {
 			for (k = 0; k < a->columns; k+=SM) {
+    /*
+     * -- CACHE LINE SIZE
+     * The last paragraph assumed, that the caching line size would be at least max(N, O)
+     * To not require this assumption we 
+     *   first query how many doubles fit into one cache line (see SM defined above)
+     *   then we break our for loops further down so that every iteration takes SM elements
+     *
+     */
 				for (i2 = 0, rc = &c->data[i*b->columns+j], ra=&a->data[i*a->columns+k]; i2 < SM; ++i2, rc+=c->columns, ra+=a->columns) {
 					_mm_prefetch (ra+8, _MM_HINT_NTA);
 					for (k2=0, rb=&b->data[k*b->columns+j]; k2 < SM; ++k2, rb+=b->columns) {
