@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <omp.h>
+#define DUMMY -1
 
 struct node {
 	struct node *next;
@@ -9,7 +10,8 @@ struct node {
 };
 
 struct queue {
-	omp_lock_t lock;
+	omp_lock_t head_lock;
+	omp_lock_t tail_lock;
 	struct node *head;
 	struct node *tail;
 };
@@ -23,18 +25,13 @@ void enqueue(struct queue *q, int data) {
 	n->data = data;
 	n->next = NULL;
 
-	omp_set_lock(&q->lock);
+	omp_set_lock(&q->tail_lock);
 
 	/* enqueue node */
-	if (q->tail)
-		q->tail->next = n;
+	q->tail->next = n;
 	q->tail = n;
 
-	/* let head point to node if queue was empty */
-	if (!q->head)
-		q->head = q->tail;
-
-	omp_unset_lock(&q->lock);
+	omp_unset_lock(&q->tail_lock);
 }
 
 /* return q->head->data */
@@ -42,37 +39,35 @@ int dequeue(struct queue *q) {
 	int data;
 	struct node *n;
 
-	omp_set_lock(&q->lock);
+	omp_set_lock(&q->head_lock);
 
 	/* check for empty queue */
-	if (!q->head) {
-		omp_unset_lock(&q->lock);
+	if (! q->head->next) {
+		omp_unset_lock(&q->head_lock);
 		return 0;
 	}
 
 	/* dequeue head node */
 	n = q->head;
-	q->head = q->head->next;
+    q->head = q->head->next;
+    data = q->head->data;
+    q->head->data = DUMMY;
+	free(n);
 
-	/* don't let tail point to the dequeued node */
-	if (!q->head)
-		q->tail = NULL;
-
-	omp_unset_lock(&q->lock);
+	omp_unset_lock(&q->head_lock);
 
 	/* extract data and free node */
-	data = n->data;
-	free(n);
 	assert(data);
 
 	return data;
 }
 
 
-
 int main( int argc, char **argv ) {
-	struct queue q = { .head = NULL, .tail = NULL };
-	omp_init_lock(&q.lock);
+    struct node dummy_node = { .data = DUMMY, .next = NULL };
+	struct queue q = { .head = &dummy_node, .tail = &dummy_node };
+	omp_init_lock(&q.tail_lock);
+	omp_init_lock(&q.head_lock);
 
 	#pragma omp parallel
 	#pragma omp single nowait
@@ -84,6 +79,7 @@ int main( int argc, char **argv ) {
 				int j;
 				for(j = 0; j < 1000; ++j) {
 					enqueue(&q, i*1000+j);
+					printf("enqueue %d\n", i*1000+j);
 				}
 			}
 			#pragma omp task
@@ -107,6 +103,7 @@ int main( int argc, char **argv ) {
 	}
 	assert(!q.head && !q.tail);
 
-	omp_destroy_lock(&q.lock);
+	omp_destroy_lock(&q.tail_lock);
+	omp_destroy_lock(&q.head_lock);
 	return 0;
 }
