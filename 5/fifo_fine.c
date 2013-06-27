@@ -40,14 +40,25 @@ int dequeue(struct queue *q) {
 	struct node *n;
 
 	omp_set_lock(&q->head_lock);
+    #ifdef DEBUG
+        printf("start dequeuing\n");
+    #endif
 
 	/* check for empty queue */
 	if (! q->head->next) {
 		omp_unset_lock(&q->head_lock);
+        #ifdef DEBUG
+            printf("empty queue\n");
+        #endif
 		return 0;
 	}
 
 	/* dequeue head node */
+    #ifdef DEBUG
+        printf("not empty queue\n");
+        printf("cur data %d\n", q->head->data);
+        printf("next data %d\n", q->head->next->data);
+    #endif
 	n = q->head;
     q->head = q->head->next;
     data = q->head->data;
@@ -64,8 +75,11 @@ int dequeue(struct queue *q) {
 
 
 int main( int argc, char **argv ) {
-    struct node dummy_node = { .data = DUMMY, .next = NULL };
-	struct queue q = { .head = &dummy_node, .tail = &dummy_node };
+    struct node *dummy_node; 
+	dummy_node = malloc(sizeof(*dummy_node));
+    dummy_node->data = DUMMY;
+    dummy_node->next = NULL;
+	struct queue q = { .head = dummy_node, .tail = dummy_node };
 	omp_init_lock(&q.tail_lock);
 	omp_init_lock(&q.head_lock);
 
@@ -101,7 +115,8 @@ int main( int argc, char **argv ) {
 			break;
 		printf("dequeue %d\n", d);
 	}
-	assert(!q.head && !q.tail);
+	assert(q.head->data == DUMMY && q.tail->data == DUMMY);
+	//assert(!q.head && !q.tail);
 
 	omp_destroy_lock(&q.tail_lock);
 	omp_destroy_lock(&q.head_lock);
