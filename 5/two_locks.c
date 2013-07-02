@@ -63,11 +63,11 @@ int dequeue(struct queue *q) {
     q->head = q->head->next;
     data = q->head->data;
     q->head->data = DUMMY;
-	free(n);
 
 	omp_unset_lock(&q->head_lock);
 
 	/* extract data and free node */
+	free(n);
 	assert(data);
 
 	return data;
