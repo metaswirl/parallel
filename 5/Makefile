@@ -1,6 +1,6 @@
 LDFLAGS += -fopenmp -ggdb
 #CFLAGS += -Wall -O2
-CC = /usr/local/Cellar/gcc48/4.8.1/bin/gcc-4.8 
+#CC = /usr/local/Cellar/gcc48/4.8.1/bin/gcc-4.8 
 
 one_lock:
 	${CC} ${LDFLAGS} one_lock.c -o one_lock

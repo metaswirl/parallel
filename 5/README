@@ -14,5 +14,9 @@ Second assignment:
 -- make lock_free_and_linearizable
 -- ./lock_free_and_linearizable
 
+Concerning the memory reclamation part, there is a garbage collector implementation for C known as Boehm-Demers-Weiser or BoehmGC. It can be used in our case as a leak detector, by including the library and calling its own memory allocation functions (e.g. GC_MALLOC). That way we still manually allocate the memory, while the collector automatically recycles memory when it determines that it can no longer be otherwise accessed. [2]
+
 Sources
-http://www.codeproject.com/Articles/153898/Yet-another-implementation-of-a-lock-free-circular
+[1] http://www.codeproject.com/Articles/153898/Yet-another-implementation-of-a-lock-free-circular
+[2] http://www.hpl.hp.com/personal/Hans_Boehm/gc/
+
