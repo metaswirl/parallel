@@ -10,8 +10,6 @@ struct node {
 };
 
 struct queue {
-	omp_lock_t head_lock;
-	omp_lock_t tail_lock;
 	struct node *head;
 	struct node *tail;
 };
