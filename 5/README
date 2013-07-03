@@ -1,0 +1,15 @@
+First assignment (optional):
+- two locks
+-- two_locks.c
+-- make two_locks
+-- ./two_locks
+
+Second assignment:
+- lock free
+-- lock_free.c
+-- make lock_free
+-- ./lock_free
+- lock free and linearizable
+-- lock_free_and_linearizable.c
+-- make lock_free_and_linearizable
+-- ./lock_free_and_linearizable
