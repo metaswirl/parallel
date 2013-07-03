@@ -74,8 +74,6 @@ int main( int argc, char **argv ) {
     dummy_node->data = -1;
     dummy_node->next = NULL;
 	struct queue q = { .head = dummy_node, .tail = dummy_node };
-	omp_init_lock(&q.tail_lock);
-	omp_init_lock(&q.head_lock);
 
     // TODO: specify shared?
 	#pragma omp parallel
@@ -115,7 +113,5 @@ int main( int argc, char **argv ) {
 	assert(q.head->next == NULL);
 	//assert(!q.head && !q.tail);
 
-	omp_destroy_lock(&q.tail_lock);
-	omp_destroy_lock(&q.head_lock);
 	return 0;
 }
