@@ -24,7 +24,11 @@ void enqueue(struct queue *q, int data) {
 	new->data = data;
 	new->next = NULL;
 
-    /* PETER BARRIER: NO PETERS ALLOWED :-P */
+    /* PETER CODE: 
+     * while ( TRUE ) {
+     *     draw(dragon);
+     * }
+     * */
     /* try untill success */
     while ( TRUE ) {
         /* enqueue node */
@@ -45,7 +49,11 @@ int dequeue(struct queue *q) {
 	struct node *head;
 	struct node *next;
 
-    /* PETER BARRIER: NO PETERS ALLOWED :-P */
+    /* PETER CODE: 
+     * while ( TRUE ) {
+     *     draw(dragon);
+     * }
+     * */
     /* try untill success */
     while( TRUE ) {
         head = q->head;
