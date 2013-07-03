@@ -1,6 +1,6 @@
 LDFLAGS += -fopenmp -ggdb
 #CFLAGS += -Wall -O2
-CC = gcc
+CC = /usr/local/Cellar/gcc48/4.8.1/bin/gcc-4.8 
 
 one_lock:
 	${CC} ${LDFLAGS} one_lock.c -o one_lock
@@ -12,7 +12,7 @@ two_critical_sections:
 	${CC} ${LDFLAGS} two_critical_sections.c -o two_critical_sections 
 
 atomic:
-	${CC} ${LDFLAGS} atomic.c -o atomic 
+	${CC} ${LDFLAGS} atomic.c -o atomic
 
 .PHONY: clean
 clean:

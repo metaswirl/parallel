@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include <omp.h>
-#define DUMMY -1
+#define TRUE 1
 
 struct node {
 	struct node *next;
@@ -18,58 +18,54 @@ struct queue {
 
 /* append data to q->tail */
 void enqueue(struct queue *q, int data) {
-	struct node *n;
+	struct node *new;
+	struct node *tail;
 
 	/* prepare node */
-	n = malloc(sizeof(*n));
-	n->data = data;
-	n->next = NULL;
+	new = malloc(sizeof(*new));
+	new->data = data;
+	new->next = NULL;
 
-	//omp_set_lock(&q->tail_lock);
-    #pragma omp critical ( TAIL )
-    {
+    /* try untill success */
+    while ( TRUE ) {
         /* enqueue node */
-        q->tail->next = n;
-        q->tail = n;
+        /* forward tail pointer */
+        tail = q->tail; 
+        if (! __sync_bool_compare_and_swap(&(q->tail), tail, new) ) {
+            continue;
+        }
+        /* change next pointer of old tail to new element */
+        tail->next = new;
+        break;
     }
-	//omp_unset_lock(&q->tail_lock);
 }
 
 /* return q->head->data */
 int dequeue(struct queue *q) {
 	int data;
-	struct node *n;
+	struct node *head;
+	struct node *next;
 
-	//omp_set_lock(&q->head_lock);
-    #pragma omp critical ( HEAD )
-    {
-        #ifdef DEBUG
-            printf("start dequeuing\n");
-        #endif
-
+    while( TRUE ) {
+        head = q->head;
+        next = head->next;
         /* check for empty queue */
-        // atomic START
-        if (q->head->next) {
-            /* dequeue head node */
-            #ifdef DEBUG
-                printf("not empty queue\n");
-                printf("cur data %d\n", q->head->data);
-                printf("next data %d\n", q->head->next->data);
-            #endif
-            // needed for freeing space: n = q->head;
-            // A and B can be switched, if in B q->head is replaced by q->head->next
-            // A
-            q->head = q->head->next;
-            // B
-            data = q->head->data;
-            q->head->data = DUMMY;
-            // assert(data);
-            // atomic end
-            // needed for freeing space: free(n);
+        if ( ! next) {
+            return 0;  
         }
-    }
-	//omp_unset_lock(&q->head_lock);
 
+        /* move head one step further */
+        if (! __sync_bool_compare_and_swap(&(q->head), head, next)) {
+            continue;
+        }
+
+        /* extract data */
+        data = next->data; // as I don't delete anything, this should work non-atomically
+
+        break;
+    }
+
+    assert(data);
 	return data;
 }
 
@@ -77,7 +73,7 @@ int dequeue(struct queue *q) {
 int main( int argc, char **argv ) {
     struct node *dummy_node; 
 	dummy_node = malloc(sizeof(*dummy_node));
-    dummy_node->data = DUMMY;
+    dummy_node->data = -1;
     dummy_node->next = NULL;
 	struct queue q = { .head = dummy_node, .tail = dummy_node };
 	omp_init_lock(&q.tail_lock);
@@ -102,10 +98,11 @@ int main( int argc, char **argv ) {
 				int d, j;
 				for(j = 0; j < 1000; ++j) {
 					d = dequeue(&q);
-					if (d)
+					if (d) {
 						printf("dequeue %d\n", d);
-				}
-			}
+                    } 
+			    }
+            }
 		}
 	}
 
@@ -116,7 +113,8 @@ int main( int argc, char **argv ) {
 			break;
 		printf("dequeue %d\n", d);
 	}
-	assert(q.head->data == DUMMY && q.tail->data == DUMMY);
+    /* no more elements in queue */
+	assert(q.head->next == NULL);
 	//assert(!q.head && !q.tail);
 
 	omp_destroy_lock(&q.tail_lock);
